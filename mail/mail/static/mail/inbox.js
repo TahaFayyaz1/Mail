@@ -47,6 +47,7 @@ function load_mailbox(mailbox) {
       for (let i = 0; i < emails.length; i++) {
         const container = document.createElement("div");
         container.className = "emails";
+
         if (emails[i].read === true) {
           container.id = "emails_read";
         }
@@ -68,33 +69,27 @@ function load_email(id) {
     .then((email) => {
       console.log(email);
 
-      const from = document.createElement("div");
-      const to = document.createElement("div");
-      const subject = document.createElement("div");
-      const timestamp = document.createElement("div");
-      const body = document.createElement("div");
+      document.querySelector(
+        "#from"
+      ).innerHTML = `<strong>From: </strong> ${email.id}`;
+      document.querySelector(
+        "#to"
+      ).innerHTML = `<strong>To: </strong> ${email.recipients}`;
+      document.querySelector(
+        "#subject"
+      ).innerHTML = `<strong>Subject: </strong> ${email.subject}`;
+      document.querySelector(
+        "#timestamp"
+      ).innerHTML = `<strong>Timestamp: </strong> ${email.timestamp}`;
+      document.querySelector("#body").innerHTML = email.body;
 
-      from.innerHTML = `<strong>From: </strong> ${email.sender}`;
-      to.innerHTML = `<strong>To: </strong> ${email.recipients}`;
-      subject.innerHTML = `<strong>Subject: </strong> ${email.subject}`;
-      timestamp.innerHTML = `<strong>Timestamp: </strong> ${email.timestamp}`;
-      body.innerHTML = email.body;
-
-      document.querySelector("#email-view").append(from);
-      document.querySelector("#email-view").append(to);
-      document.querySelector("#email-view").append(subject);
-      document.querySelector("#email-view").append(timestamp);
-      document
-        .querySelector("#email-view")
-        .append(document.querySelector("#line"));
-      document.querySelector("#email-view").append(body);
+      fetch(`/emails/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          read: true,
+        }),
+      });
     });
-  fetch(`/emails/${id}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      read: true,
-    }),
-  });
 }
 
 function send_mail() {
