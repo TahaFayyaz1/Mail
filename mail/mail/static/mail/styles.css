@@ -6,8 +6,22 @@ textarea {
   border-style: solid;
   border-width: thin;
   margin: -1px 0 0 -1px;
+  cursor: pointer;
 }
 
 #emails_read {
   background-color: rgb(206, 206, 206);
+}
+
+#email-view-1 {
+  border-top: thin;
+  background-color: aqua;
+}
+
+#line {
+  background-color: black;
+}
+
+body {
+  font-family: sans-serif;
 }

@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function compose_email() {
   // Show compose view and hide other views
   document.querySelector("#emails-view").style.display = "none";
+  document.querySelector("#email-view").style.display = "none";
   document.querySelector("#compose-view").style.display = "block";
 
   // Clear out composition fields
@@ -31,6 +32,7 @@ function compose_email() {
 function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector("#emails-view").style.display = "block";
+  document.querySelector("#email-view").style.display = "none";
   document.querySelector("#compose-view").style.display = "none";
 
   // Show the mailbox name
@@ -41,7 +43,6 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
     .then((response) => response.json())
     .then((emails) => {
-      // Print emails
       console.log(emails);
       for (let i = 0; i < emails.length; i++) {
         const container = document.createElement("div");
@@ -50,10 +51,50 @@ function load_mailbox(mailbox) {
           container.id = "emails_read";
         }
         container.innerHTML = `${emails[i].sender} - ${emails[i].subject} - ${emails[i].timestamp}`;
+        container.addEventListener("click", function () {
+          load_email(emails[i].id);
+        });
         document.querySelector("#emails-view").append(container);
       }
-      // ... do something else with emails ...
     });
+}
+
+function load_email(id) {
+  document.querySelector("#emails-view").style.display = "none";
+  document.querySelector("#email-view").style.display = "block";
+  document.querySelector("#compose-view").style.display = "none";
+  fetch(`/emails/${id}`)
+    .then((response) => response.json())
+    .then((email) => {
+      console.log(email);
+
+      const from = document.createElement("div");
+      const to = document.createElement("div");
+      const subject = document.createElement("div");
+      const timestamp = document.createElement("div");
+      const body = document.createElement("div");
+
+      from.innerHTML = `<strong>From: </strong> ${email.sender}`;
+      to.innerHTML = `<strong>To: </strong> ${email.recipients}`;
+      subject.innerHTML = `<strong>Subject: </strong> ${email.subject}`;
+      timestamp.innerHTML = `<strong>Timestamp: </strong> ${email.timestamp}`;
+      body.innerHTML = email.body;
+
+      document.querySelector("#email-view").append(from);
+      document.querySelector("#email-view").append(to);
+      document.querySelector("#email-view").append(subject);
+      document.querySelector("#email-view").append(timestamp);
+      document
+        .querySelector("#email-view")
+        .append(document.querySelector("#line"));
+      document.querySelector("#email-view").append(body);
+    });
+  fetch(`/emails/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      read: true,
+    }),
+  });
 }
 
 function send_mail() {
