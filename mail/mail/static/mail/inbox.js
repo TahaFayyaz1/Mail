@@ -9,22 +9,31 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .querySelector("#archived")
     .addEventListener("click", () => load_mailbox("archive"));
-  document.querySelector("#compose").addEventListener("click", compose_email);
+  document.querySelector("#compose").addEventListener("click", () => {
+    compose_email();
+  });
 
   // By default, load the inbox
   load_mailbox("inbox");
 });
 
-function compose_email() {
+function compose_email(recipients = "", subject = "", body = "") {
   // Show compose view and hide other views
   document.querySelector("#emails-view").style.display = "none";
   document.querySelector("#email-view").style.display = "none";
   document.querySelector("#compose-view").style.display = "block";
 
   // Clear out composition fields
-  document.querySelector("#compose-recipients").value = "";
-  document.querySelector("#compose-subject").value = "";
-  document.querySelector("#compose-body").value = "";
+  document.querySelector("#compose-recipients").value = recipients;
+
+  if (subject.slice(0, 4) === "Re: ") {
+    document.querySelector("#compose-subject").value = subject;
+  } else if (subject === "") {
+    document.querySelector("#compose-subject").value = "";
+  } else {
+    document.querySelector("#compose-subject").value = `Re: ${subject}`;
+  }
+  document.querySelector("#compose-body").value = body;
 
   document.querySelector("#compose-form").onsubmit = send_mail;
 }
@@ -114,6 +123,11 @@ function load_email(id) {
             }),
           }).then(() => load_mailbox("inbox"));
         }
+      };
+
+      reply_body = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+      document.querySelector("#reply-button").onclick = () => {
+        compose_email(email.sender, email.subject, reply_body);
       };
     });
 }
