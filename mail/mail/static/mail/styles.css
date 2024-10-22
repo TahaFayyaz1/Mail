@@ -1,3 +1,13 @@
 textarea {
-    min-height: 400px;
+  min-height: 400px;
+}
+
+.emails {
+  border-style: solid;
+  border-width: thin;
+  margin: -1px 0 0 -1px;
+}
+
+#emails_read {
+  background-color: rgb(206, 206, 206);
 }
