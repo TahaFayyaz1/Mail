@@ -61,16 +61,16 @@ function load_mailbox(mailbox) {
         if (emails[i].read === true) {
           container.id = "emails_read";
         }
-        container.innerHTML = `${emails[i].sender} - ${emails[i].subject} - ${emails[i].timestamp}`;
+        container.innerHTML = `<span id="senderdiv">${emails[i].sender}</span><span id="subjectdiv">${emails[i].subject}</span><span id="timestampdiv">${emails[i].timestamp}</span>`;
         container.addEventListener("click", function () {
-          load_email(emails[i].id);
+          load_email(emails[i].id, mailbox);
         });
         document.querySelector("#emails-view").append(container);
       }
     });
 }
 
-function load_email(id) {
+function load_email(id, mailbox) {
   document.querySelector("#emails-view").style.display = "none";
   document.querySelector("#email-view").style.display = "block";
   document.querySelector("#compose-view").style.display = "none";
@@ -101,29 +101,34 @@ function load_email(id) {
       });
 
       const archive_button = document.querySelector("#archive-button");
-      if (email.archived === false) {
-        archive_button.innerHTML = "Archive";
-      } else {
-        archive_button.innerHTML = "Unarchive";
-      }
-
-      archive_button.onclick = () => {
+      if (mailbox !== "sent") {
+        archive_button.hidden = false;
         if (email.archived === false) {
-          fetch(`/emails/${id}`, {
-            method: "PUT",
-            body: JSON.stringify({
-              archived: true,
-            }),
-          }).then(() => load_mailbox("inbox"));
+          archive_button.innerHTML = "Archive";
         } else {
-          fetch(`/emails/${id}`, {
-            method: "PUT",
-            body: JSON.stringify({
-              archived: false,
-            }),
-          }).then(() => load_mailbox("inbox"));
+          archive_button.innerHTML = "Unarchive";
         }
-      };
+
+        archive_button.onclick = () => {
+          if (email.archived === false) {
+            fetch(`/emails/${id}`, {
+              method: "PUT",
+              body: JSON.stringify({
+                archived: true,
+              }),
+            }).then(() => load_mailbox("inbox"));
+          } else {
+            fetch(`/emails/${id}`, {
+              method: "PUT",
+              body: JSON.stringify({
+                archived: false,
+              }),
+            }).then(() => load_mailbox("inbox"));
+          }
+        };
+      } else {
+        archive_button.hidden = true;
+      }
 
       reply_body = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
       document.querySelector("#reply-button").onclick = () => {

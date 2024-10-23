@@ -7,19 +7,27 @@ textarea {
   border-width: thin;
   margin: -1px 0 0 -1px;
   cursor: pointer;
+  padding: 2px 3px;
 }
 
 #emails_read {
-  background-color: rgb(206, 206, 206);
+  background-color: rgb(185, 185, 185);
 }
 
-#email-view-1 {
-  border-top: thin;
-  background-color: aqua;
+#timestampdiv {
+  position: relative;
+  float: right;
+  margin-right: 5px;
 }
 
-#line {
-  background-color: black;
+#subjectdiv {
+  position: absolute;
+  left: 26%;
+}
+
+#senderdiv {
+  margin-left: 5px;
+  font-weight: bold;
 }
 
 body {
