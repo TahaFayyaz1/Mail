@@ -27,7 +27,7 @@ To set up this project on your computer:
 <ol>
   <li>Download this project:<br><code>git clone https://github.com/TahaFayyaz1/Mail.git </code></li>
   <li>Install all necessary dependencies <br><code>pip install -r requirements.txt</code></li>
-  <li>Make migrations <br><code>python manage.py makemigrations</code></li>
+  <li>Make migrations <br><code>python manage.py makemigrations mail</code></li>
   <li>Migrate <br><code>python manage.py migrate</code></li>
 </ol>
 
